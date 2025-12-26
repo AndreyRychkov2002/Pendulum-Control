@@ -149,5 +149,9 @@ def animate(i):
 
 
 ani = animation.FuncAnimation(fig_anim, animate, frames=len(t), interval=dt*1000, blit=True)
+writer = animation.PillowWriter(fps=15,
+                                 metadata=dict(artist='Me'),
+                                 bitrate=512)
+ani.save('pendulum.gif', writer=writer)
 plt.tight_layout()
 plt.show()
