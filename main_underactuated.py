@@ -44,24 +44,16 @@ def get_lqr_gain(inverted=False):
     K = np.linalg.inv(R) @ B.T @ P
     return K
 
-# Гейны для управления
-K_stable = get_lqr_gain(inverted=False)  # Будет основой для поверхности SMC
-K_unstable = get_lqr_gain(inverted=True) # Для классического LQR вверху
+K_stable = get_lqr_gain(inverted=False) 
+K_unstable = get_lqr_gain(inverted=True) 
 
 def get_smc_u(state, target, K_surf):
-    """
-    SMC управление для нижнего положения.
-    Использует вектор K_surf для определения скользящей поверхности s = K * e
-    """
     error = state - target
-    # 1. Определяем скользящую переменную s
     s = np.dot(K_surf, error)
     
-    # 2. Параметры SMC
-    rho = 15.0  # Усиление (насколько агрессивно возвращаем на поверхность)
-    epsilon = 0.2  # Ширина слоя для сглаживания (борьба с chattering)
+    rho = 15.0  
+    epsilon = 0.2 
     
-    # 3. Закон управления: эквивалентное (LQR база) + робастное (tanh)
     u_eq = -np.dot(K_surf, state) 
     u_reach = -rho * np.tanh(s / epsilon)
     
